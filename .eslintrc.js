@@ -11,6 +11,9 @@ module.exports = {
       version: 'detect',
     },
     'import/ignore': ['node_modules'],
+    'import/resolver': {
+      typescript: {}, // this loads <rootdir>/tsconfig.json to eslint
+    },
   },
   plugins: ['@typescript-eslint', 'import', 'filenames', 'prettier', 'react', 'react-native'],
   extends: [
