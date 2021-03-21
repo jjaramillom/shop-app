@@ -1,8 +1,19 @@
-// import React from 'react';
-// import { FlatList } from 'react-native';
+import React from 'react';
+import { FlatList, Text } from 'react-native';
 
-// const ProductsOverviewScreen = () => {
-//   return <FlatList> </FlatList>
-// };
+import { useProductsReducer } from '@app/hooks';
 
-// export default ProductsOverviewScreen;
+const ProductsOverviewScreen = () => {
+  const [_, { availableProducts }] = useProductsReducer();
+
+  return (
+    <FlatList
+      data={availableProducts}
+      renderItem={(data) => <Text>{data.item.title}</Text>}
+      keyExtractor={(el) => el.id}>
+      {' '}
+    </FlatList>
+  );
+};
+
+export default ProductsOverviewScreen;

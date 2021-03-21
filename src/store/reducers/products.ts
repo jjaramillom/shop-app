@@ -1,7 +1,7 @@
-import { PRODUCTS } from 'data/dummy-data';
-import Product from 'models/Product';
+import { PRODUCTS } from '@app/data/dummy-data';
+import Product from '@app/models/Product';
 
-type State = {
+export type State = {
   availableProducts: Product[];
   userProducts: Product[];
 };
