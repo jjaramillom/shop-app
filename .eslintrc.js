@@ -28,7 +28,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-explicit-any': 2,
-    '@typescript-eslint/no-unused-vars': ['error', { args: 'none' }],
+    '@typescript-eslint/no-unused-vars': ['error', { args: 'none', varsIgnorePattern: '^_' }],
     '@typescript-eslint/no-use-before-define': 0,
     'filenames/match-exported': [2, ['pascal', 'camel']],
     'import/newline-after-import': 2,
