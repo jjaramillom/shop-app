@@ -5,8 +5,9 @@ import {
 } from 'react-navigation-stack';
 
 import { Route } from './index';
-import { ProductsRoutes } from './routeTypes';
+import { ProductsRoutes } from './routes';
 import colors from '@app/constants/colors';
+import ProductDetailScreen from '@app/screens/shop/ProductDetailScreen';
 import ProductsOverviewScreen from '@app/screens/shop/ProductsOverviewScreen';
 
 type RoutesMap = {
@@ -23,7 +24,9 @@ const defaultNavigationOptions: NavigationStackOptions = {
 const routesMap: RoutesMap = {
   ProductsOverview: {
     screen: ProductsOverviewScreen,
-    navigationOptions: { headerTitle: 'Meal categories' },
+  },
+  ProductDetails: {
+    screen: ProductDetailScreen,
   },
 };
 
