@@ -1,3 +1,4 @@
+import useCartItemsReducer from './useCartItemsReducer';
 import useProductsReducer from './useProductsReducer';
 
-export { useProductsReducer };
+export { useProductsReducer, useCartItemsReducer };

@@ -3,11 +3,12 @@ import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import Navigator from './src/navigation';
 import { rootReducer } from './src/store/reducers/root';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, composeWithDevTools());
 
 const fetchFonts = () =>
   Font.loadAsync({

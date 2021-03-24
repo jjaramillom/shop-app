@@ -3,8 +3,9 @@ import { FlatList } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
 
 import ProductItem from '@app/components/ProductItem';
-import { useProductsReducer } from '@app/hooks';
+import { useProductsReducer, useCartItemsReducer } from '@app/hooks';
 import { ProductsRoutes } from '@app/navigation/routes';
+import { addToCart } from '@app/store/actions';
 
 interface StackProps {
   navigation: NavigationStackProp<unknown>;
@@ -12,8 +13,14 @@ interface StackProps {
 
 const ProductsOverviewScreen: React.FC<StackProps> = ({ navigation }: StackProps) => {
   const [, { availableProducts }] = useProductsReducer();
+  const [dispatch] = useCartItemsReducer();
 
-  const handleAddToCart = (id: string) => console.log(id);
+  const handleAddToCart = (id: string) => {
+    const productToAdd = availableProducts.find((p) => p.id === id);
+    if (productToAdd) {
+      dispatch(addToCart(productToAdd));
+    }
+  };
   const handleViewDetails = (id: string, title: string) =>
     navigation.navigate({ routeName: ProductsRoutes.ProductDetails, params: { id, title } });
 
