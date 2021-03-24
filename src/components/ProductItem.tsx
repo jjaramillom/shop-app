@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Button } from 'react-native';
+import { View, Image, StyleSheet, Button } from 'react-native';
 
+import DefaultText from '@app/components/DefaultText';
+import DefaultTextBold from '@app/components/DefaultTextBold';
 import TouchableComponent from '@app/components/TouchableComponent';
-import colors from '@app/constants/colors';
+import colors from '@app/constants/Colors';
 
 type Props = {
   imageUrl: string;
@@ -25,8 +27,8 @@ const ProductItem: React.FC<Props> = ({
         <View>
           <Image style={styles.image} source={{ uri: imageUrl }} />
           <View style={styles.details}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.price}>${price.toFixed(2)}</Text>
+            <DefaultTextBold style={styles.title}>{title}</DefaultTextBold>
+            <DefaultText style={styles.price}>${price.toFixed(2)}</DefaultText>
           </View>
           <View style={styles.actions}>
             <Button title='View Details' color={colors.primary} onPress={onViewDetails} />
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginVertical: 4,
+    marginVertical: 2,
   },
   price: {
     fontSize: 14,

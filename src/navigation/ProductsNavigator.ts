@@ -6,7 +6,7 @@ import {
 
 import { Route } from './index';
 import { ProductsRoutes } from './routes';
-import colors from '@app/constants/colors';
+import { Colors, Fonts } from '@app/constants';
 import ProductDetailScreen from '@app/screens/shop/ProductDetailScreen';
 import ProductsOverviewScreen from '@app/screens/shop/ProductsOverviewScreen';
 
@@ -16,7 +16,13 @@ type RoutesMap = {
 
 const defaultNavigationOptions: NavigationStackOptions = {
   headerStyle: {
-    backgroundColor: colors.primary,
+    backgroundColor: Colors.primary,
+  },
+  headerTitleStyle: {
+    fontFamily: Fonts.openSansBold,
+  },
+  headerBackTitleStyle: {
+    fontFamily: Fonts.openSansBold,
   },
   headerTintColor: 'white',
 };

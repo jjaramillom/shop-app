@@ -11,7 +11,7 @@ interface StackProps {
 }
 
 const ProductsOverviewScreen: React.FC<StackProps> = ({ navigation }: StackProps) => {
-  const [_, { availableProducts }] = useProductsReducer();
+  const [, { availableProducts }] = useProductsReducer();
 
   const handleAddToCart = (id: string) => console.log(id);
   const handleViewDetails = (id: string, title: string) =>
