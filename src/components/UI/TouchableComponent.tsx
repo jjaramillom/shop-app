@@ -25,7 +25,7 @@ const TouchableComponent: React.FC<Props> = (props: React.PropsWithChildren<Prop
   }
 
   return (
-    <TouchableCmp style={{ ...styles.wrapper, style }} {...restOfProps}>
+    <TouchableCmp style={[styles.wrapper, style]} {...restOfProps}>
       {children}
     </TouchableCmp>
   );

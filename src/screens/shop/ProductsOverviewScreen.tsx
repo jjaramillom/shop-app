@@ -1,8 +1,10 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import { NavigationStackProp } from 'react-navigation-stack';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
-import ProductItem from '@app/components/ProductItem';
+import ProductItem from '@app/components/shop/ProductItem';
+import { HeaderButton } from '@app/components/UI';
 import { useProductsReducer, useCartItemsReducer } from '@app/hooks';
 import { ProductsRoutes } from '@app/navigation/routes';
 import { addToCart } from '@app/store/actions';
@@ -11,7 +13,8 @@ interface StackProps {
   navigation: NavigationStackProp<unknown>;
 }
 
-const ProductsOverviewScreen: React.FC<StackProps> = ({ navigation }: StackProps) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const ProductsOverviewScreen = ({ navigation }: StackProps) => {
   const [, { availableProducts }] = useProductsReducer();
   const [dispatch] = useCartItemsReducer();
 
@@ -39,6 +42,23 @@ const ProductsOverviewScreen: React.FC<StackProps> = ({ navigation }: StackProps
       keyExtractor={(el) => el.id}
     />
   );
+};
+
+ProductsOverviewScreen.navigationOptions = (navigationData: {
+  navigation: NavigationStackProp<unknown>;
+}): NavigationStackOptions => {
+  return {
+    title: navigationData.navigation.getParam('title'),
+    // eslint-disable-next-line react/display-name
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title='Cart'
+          iconName='md-cart'
+          onPress={() => navigationData.navigation.navigate(ProductsRoutes.Cart)}></Item>
+      </HeaderButtons>
+    ),
+  };
 };
 
 export default ProductsOverviewScreen;

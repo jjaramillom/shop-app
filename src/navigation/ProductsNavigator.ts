@@ -7,6 +7,7 @@ import {
 import { Route } from './index';
 import { ProductsRoutes } from './routes';
 import { Colors, Fonts } from '@app/constants';
+import CartScreen from '@app/screens/shop/CartScreen';
 import ProductDetailScreen from '@app/screens/shop/ProductDetailScreen';
 import ProductsOverviewScreen from '@app/screens/shop/ProductsOverviewScreen';
 
@@ -33,6 +34,9 @@ const routesMap: RoutesMap = {
   },
   ProductDetails: {
     screen: ProductDetailScreen,
+  },
+  Cart: {
+    screen: CartScreen,
   },
 };
 

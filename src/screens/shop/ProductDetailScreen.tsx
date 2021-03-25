@@ -9,17 +9,16 @@ import {
 } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
-import DefaultText from '@app/components/DefaultText';
-import DefaultTextBold from '@app/components/DefaultTextBold';
+import { DefaultText, DefaultTextBold } from '@app/components/UI';
 import { Colors } from '@app/constants';
 import { useProductsReducer } from '@app/hooks';
 
-interface StackProps {
+interface Props {
   navigation: NavigationStackProp<unknown>;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const ProductDetailScreen = ({ navigation }: StackProps) => {
+const ProductDetailScreen = ({ navigation }: Props) => {
   const id = navigation.getParam('id');
   const [, { availableProducts }] = useProductsReducer();
   const selectedProduct = availableProducts.find((p) => p.id === id);

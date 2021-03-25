@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet, Button } from 'react-native';
 
-import DefaultText from '@app/components/DefaultText';
-import DefaultTextBold from '@app/components/DefaultTextBold';
-import TouchableComponent from '@app/components/TouchableComponent';
+import { TouchableComponent, DefaultTextBold, DefaultText, Card } from '@app/components/UI';
 import colors from '@app/constants/Colors';
 
 type Props = {
@@ -22,7 +20,7 @@ const ProductItem: React.FC<Props> = ({
   onViewDetails,
 }: Props) => {
   return (
-    <View style={styles.wrapper}>
+    <Card style={styles.wrapper}>
       <TouchableComponent onPress={onViewDetails} useForeground={true}>
         <View>
           <Image style={styles.image} source={{ uri: imageUrl }} />
@@ -36,22 +34,13 @@ const ProductItem: React.FC<Props> = ({
           </View>
         </View>
       </TouchableComponent>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
-    shadowColor: 'black',
-    shadowOpacity: 0.25,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: 'white',
     height: 300,
-    margin: 20,
-    overflow: 'hidden',
   },
   image: {
     width: '100%',
