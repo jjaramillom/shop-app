@@ -1,4 +1,5 @@
-import { ActionTypes, AddToCart, Action } from '../actions/cartActionTypes';
+import { ActionTypes, AddToCart, RemoveFromCart, Action } from '../actions/cartActionTypes';
+import { ReducerResolver } from './types';
 import CartItem from '@app/models/CartItem';
 
 export type State = {
@@ -33,8 +34,34 @@ const addProduct = (
   };
 };
 
-const resolversMap: Record<Action, (state: State, action: ActionTypes) => State> = {
-  ADD_TO_CART: addProduct,
+const removeProduct = (state: State, { payload: { productId } }: RemoveFromCart): State => {
+  const productToRemove = state.items[productId];
+  if (!productToRemove) {
+    return state;
+  } else if (productToRemove.quantity === 1) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { [productId]: omit, ...newItems } = state.items;
+    return { ...state, items: newItems, totalPrice: state.totalPrice - productToRemove.price };
+  }
+  const newProduct = new CartItem({
+    title: productToRemove.title,
+    price: productToRemove.price,
+    quantity: productToRemove.quantity - 1,
+  });
+  return {
+    ...state,
+    items: {
+      ...state.items,
+      [productId]: newProduct,
+    },
+    totalPrice: state.totalPrice - productToRemove.price,
+  };
+};
+
+const resolversMap: Record<Action, ReducerResolver<State, ActionTypes>> = {
+  ADD_TO_CART: (state: State, action): State => addProduct(state, action as AddToCart),
+  REMOVE_FROM_CART: (state: State, action): State =>
+    removeProduct(state, action as RemoveFromCart),
 };
 
 export default (state: State = initialState, action: ActionTypes): State => {

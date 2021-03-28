@@ -5,46 +5,53 @@ import { NavigationStackProp } from 'react-navigation-stack';
 import CartItem from '@app/components/shop/CartItem';
 import { DefaultText, DefaultTextBold, Card } from '@app/components/UI';
 import { Colors } from '@app/constants';
-import { useCartItemsReducer } from '@app/hooks';
+import { useCartItemsReducer, useOrdersReducer } from '@app/hooks';
+import { removeFromCart, addOrder } from '@app/store/actions';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
 }
 
 const CartScreen: React.FC<Props> = (props: Props) => {
-  const [, { items, totalPrice }] = useCartItemsReducer();
-  const itemsArray = Object.keys(items).map((k) => ({
-    id: k,
-    title: items[k].title,
-    quantity: items[k].quantity,
-    price: items[k].price,
-  }));
+  const [dispatch, { items, totalPrice }] = useCartItemsReducer();
+  const [dispatchOrder] = useOrdersReducer();
+  const itemsArray = Object.keys(items)
+    .map((k) => ({
+      id: k,
+      title: items[k].title,
+      quantity: items[k].quantity,
+      price: items[k].price,
+    }))
+    .sort((a, b) => (a.title < b.title ? -1 : 1));
   return (
     <View style={styles.container}>
       <Card style={styles.summary}>
         <DefaultTextBold style={styles.summaryText}>
-          Total <DefaultText style={styles.amount}>${totalPrice.toFixed(2)}</DefaultText>
+          Total{' '}
+          <DefaultText style={styles.amount}>${Math.abs(totalPrice).toFixed(2)}</DefaultText>
         </DefaultTextBold>
         <Button
           title='Order Now'
           disabled={itemsArray.length === 0}
           color={Colors.primary}
-          onPress={() => {}}
+          onPress={() => dispatchOrder(addOrder(itemsArray))}
         />
       </Card>
-      <Card style={styles.itemsCard}>
-        <FlatList
-          data={itemsArray}
-          renderItem={({ item }) => (
-            <CartItem
-              price={item.price}
-              title={item.title}
-              quantity={item.quantity}
-              onRemove={() => console.log('remove')}
-            />
-          )}
-        />
-      </Card>
+      {itemsArray.length === 0 ? null : (
+        <Card style={styles.itemsCard}>
+          <FlatList
+            data={itemsArray}
+            renderItem={({ item }) => (
+              <CartItem
+                price={item.price}
+                title={item.title}
+                quantity={item.quantity}
+                onRemove={() => dispatch(removeFromCart(item.id))}
+              />
+            )}
+          />
+        </Card>
+      )}
     </View>
   );
 };
