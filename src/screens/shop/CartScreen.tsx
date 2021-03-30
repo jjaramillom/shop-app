@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Button, FlatList } from 'react-native';
-import { NavigationStackProp } from 'react-navigation-stack';
+import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
 import CartItem from '@app/components/shop/CartItem';
 import { DefaultText, DefaultTextBold, Card } from '@app/components/UI';
@@ -12,7 +12,8 @@ interface Props {
   navigation: NavigationStackProp<unknown>;
 }
 
-const CartScreen: React.FC<Props> = (props: Props) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const CartScreen = (props: Props) => {
   const [dispatch, { items, totalPrice }] = useCartItemsReducer();
   const [dispatchOrder] = useOrdersReducer();
   const itemsArray = Object.keys(items)
@@ -75,5 +76,11 @@ const styles = StyleSheet.create({
     color: Colors.accent,
   },
 });
+
+const navigationOptions: NavigationStackOptions = {
+  headerTitle: 'Your cart!'
+};
+
+CartScreen.navigationOptions = navigationOptions;
 
 export default CartScreen;

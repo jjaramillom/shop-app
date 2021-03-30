@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlatList } from 'react-native';
+import { NavigationDrawerProp } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
@@ -45,7 +46,7 @@ const ProductsOverviewScreen = ({ navigation }: StackProps) => {
 };
 
 ProductsOverviewScreen.navigationOptions = (navigationData: {
-  navigation: NavigationStackProp<unknown>;
+  navigation: NavigationDrawerProp<unknown>;
 }): NavigationStackOptions => {
   return {
     title: navigationData.navigation.getParam('title'),
@@ -56,6 +57,15 @@ ProductsOverviewScreen.navigationOptions = (navigationData: {
           title='Cart'
           iconName='md-cart'
           onPress={() => navigationData.navigation.navigate(ProductsRoutes.Cart)}></Item>
+      </HeaderButtons>
+    ),
+    // eslint-disable-next-line react/display-name
+    headerLeft: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title='Menu'
+          iconName='md-menu'
+          onPress={() => navigationData.navigation.toggleDrawer()}></Item>
       </HeaderButtons>
     ),
   };
