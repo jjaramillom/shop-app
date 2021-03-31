@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 
 import { ActionTypes } from '@app/store/actions/cartActionTypes';
 import { State } from '@app/store/reducers/cart';
-import { RootState } from '@app/store/reducers/root';
+import { RootState } from '@app/store/store';
 
 const cartItems = (state: RootState) => state.cartItems;
 

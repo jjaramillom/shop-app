@@ -6,9 +6,9 @@ import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-st
 
 import ProductItem from '@app/components/shop/ProductItem';
 import { HeaderButton } from '@app/components/UI';
-import { useProductsReducer, useCartItemsReducer } from '@app/hooks';
+import { useReducer } from '@app/hooks';
 import { ProductsRoutes } from '@app/navigation/routes';
-import { addToCart } from '@app/store/actions';
+import { addProduct } from '@app/store/cart';
 
 interface StackProps {
   navigation: NavigationStackProp<unknown>;
@@ -16,13 +16,13 @@ interface StackProps {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ProductsOverviewScreen = ({ navigation }: StackProps) => {
-  const [, { availableProducts }] = useProductsReducer();
-  const [dispatch] = useCartItemsReducer();
+  const { dispatch, selector } = useReducer();
+  const availableProducts = selector((state) => state.products.availableProducts);
 
   const handleAddToCart = (id: string) => {
     const productToAdd = availableProducts.find((p) => p.id === id);
     if (productToAdd) {
-      dispatch(addToCart(productToAdd));
+      dispatch(addProduct({ product: productToAdd }));
     }
   };
   const handleViewDetails = (id: string, title: string) =>

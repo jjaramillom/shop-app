@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 
 import { ActionTypes } from '@app/store/actions/ordersActionTypes';
 import { State } from '@app/store/reducers/orders';
-import { RootState } from '@app/store/reducers/root';
+import { RootState } from '@app/store/store';
 
 const orders = (state: RootState) => state.orders;
 

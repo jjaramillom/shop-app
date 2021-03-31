@@ -5,8 +5,9 @@ import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-st
 import CartItem from '@app/components/shop/CartItem';
 import { DefaultText, DefaultTextBold, Card } from '@app/components/UI';
 import { Colors } from '@app/constants';
-import { useCartItemsReducer, useOrdersReducer } from '@app/hooks';
-import { removeFromCart, addOrder } from '@app/store/actions';
+import { useReducer } from '@app/hooks';
+import { removeProduct } from '@app/store/cart';
+import { addOrder } from '@app/store/orders';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
@@ -14,8 +15,8 @@ interface Props {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CartScreen = (props: Props) => {
-  const [dispatch, { items, totalPrice }] = useCartItemsReducer();
-  const [dispatchOrder] = useOrdersReducer();
+  const { dispatch, selector } = useReducer();
+  const { items, totalPrice } = selector((state) => state.cartItems);
   const itemsArray = Object.keys(items)
     .map((k) => ({
       id: k,
@@ -35,7 +36,7 @@ const CartScreen = (props: Props) => {
           title='Order Now'
           disabled={itemsArray.length === 0}
           color={Colors.primary}
-          onPress={() => dispatchOrder(addOrder(itemsArray))}
+          onPress={() => dispatch(addOrder({ items: itemsArray }))}
         />
       </Card>
       {itemsArray.length === 0 ? null : (
@@ -47,7 +48,7 @@ const CartScreen = (props: Props) => {
                 price={item.price}
                 title={item.title}
                 quantity={item.quantity}
-                onRemove={() => dispatch(removeFromCart(item.id))}
+                onRemove={() => dispatch(removeProduct({ productId: item.id }))}
               />
             )}
           />
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
 });
 
 const navigationOptions: NavigationStackOptions = {
-  headerTitle: 'Your cart!'
+  headerTitle: 'Your cart!',
 };
 
 CartScreen.navigationOptions = navigationOptions;

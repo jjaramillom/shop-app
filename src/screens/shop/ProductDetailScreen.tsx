@@ -11,7 +11,7 @@ import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-st
 
 import { DefaultText, DefaultTextBold } from '@app/components/UI';
 import { Colors } from '@app/constants';
-import { useProductsReducer } from '@app/hooks';
+import { useReducer } from '@app/hooks';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
@@ -20,14 +20,19 @@ interface Props {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ProductDetailScreen = ({ navigation }: Props) => {
   const id = navigation.getParam('id');
-  const [, { availableProducts }] = useProductsReducer();
+  const { selector } = useReducer();
+  const { availableProducts } = selector((state) => state.products);
   const selectedProduct = availableProducts.find((p) => p.id === id);
 
   return (
     <ScrollView>
       <Image style={styles.image} source={{ uri: selectedProduct?.imageUrl }} />
       <View style={styles.actions}>
-        <Button color={Colors.primary} title='Add to cart' onPress={() => {}} />
+        <Button
+          color={Colors.primary}
+          title='Add to cart'
+          onPress={() => console.log('add to cart')}
+        />
       </View>
       <DefaultTextBold style={styles.price}>
         ${selectedProduct?.price.toFixed(2)}

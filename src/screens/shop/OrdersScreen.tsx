@@ -5,7 +5,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
 import { HeaderButton } from '@app/components/UI';
-import { useOrdersReducer } from '@app/hooks';
+import { useReducer } from '@app/hooks';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
@@ -13,7 +13,8 @@ interface Props {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const OrdersScreen = ({ navigation }: Props) => {
-  const [, { orders }] = useOrdersReducer();
+  const { selector } = useReducer();
+  const { orders } = selector((state) => state.orders);
 
   return (
     <FlatList data={orders} renderItem={(itemData) => <Text>{itemData.item.price}</Text>} />

@@ -2,13 +2,9 @@ import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
 
 import Navigator from './src/navigation';
-import { rootReducer } from './src/store/reducers/root';
-
-const store = createStore(rootReducer, composeWithDevTools());
+import store from './src/store/store';
 
 const fetchFonts = () =>
   Font.loadAsync({
