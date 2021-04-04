@@ -1,37 +1,32 @@
 import React from 'react';
-import { View, Image, StyleSheet, Button } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 
 import { TouchableComponent, DefaultTextBold, DefaultText, Card } from '@app/components/UI';
-import colors from '@app/constants/Colors';
 
 type Props = {
   imageUrl: string;
   title: string;
   price: number;
-  onAddToCart: () => void;
-  onViewDetails: () => void;
+  onSelect?: () => void;
 };
 
-const ProductItem: React.FC<Props> = ({
+const ProductItem: React.FC<React.PropsWithChildren<Props>> = ({
   imageUrl,
   price,
   title,
-  onAddToCart,
-  onViewDetails,
-}: Props) => {
+  onSelect,
+  children,
+}: React.PropsWithChildren<Props>) => {
   return (
     <Card style={styles.wrapper}>
-      <TouchableComponent onPress={onViewDetails} useForeground={true}>
+      <TouchableComponent onPress={onSelect} useForeground={true}>
         <View>
           <Image style={styles.image} source={{ uri: imageUrl }} />
           <View style={styles.details}>
             <DefaultTextBold style={styles.title}>{title}</DefaultTextBold>
             <DefaultText style={styles.price}>${price.toFixed(2)}</DefaultText>
           </View>
-          <View style={styles.actions}>
-            <Button title='View Details' color={colors.primary} onPress={onViewDetails} />
-            <Button title='Add to Cart' color={colors.primary} onPress={onAddToCart} />
-          </View>
+          <View style={styles.actions}>{children}</View>
         </View>
       </TouchableComponent>
     </Card>

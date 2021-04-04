@@ -12,5 +12,11 @@ export enum OrdersRoutes {
 export enum ShopRoutes {
   Orders = 'Orders',
   Products = 'Products',
+  Admin = 'Admin',
   // OrderDetails = 'OrderDetails',
+}
+
+export enum AdminRoutes {
+  UserProducts = 'UserProducts',
+  EditProduct = 'EditProduct',
 }

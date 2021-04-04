@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import CartItem from '@app/models/CartItem';
 import Product from '@app/models/Product';
 import { add } from '@app/store/orders';
+import { deleteProduct } from '@app/store/products';
 
 interface State {
   items: Record<string, CartItem>;
@@ -46,9 +47,7 @@ const cartSlice = createSlice({
       if (!productToRemove) {
         return;
       } else if (productToRemove.quantity === 1) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { [productId]: omit, ...newItems } = state.items;
-        state.items = newItems;
+        delete state.items[productId];
       } else {
         state.items[productId].quantity -= 1;
       }
@@ -56,10 +55,14 @@ const cartSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(add, (state, action) => {
-      state.items = {};
-      state.totalPrice = 0;
-    });
+    builder
+      .addCase(add, (state, action) => {
+        state.items = {};
+        state.totalPrice = 0;
+      })
+      .addCase(deleteProduct, (state, action) => {
+        delete state.items[action.payload.itemId];
+      });
   },
 });
 

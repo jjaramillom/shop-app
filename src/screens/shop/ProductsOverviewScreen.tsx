@@ -1,11 +1,12 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Button } from 'react-native';
 import { NavigationDrawerProp } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
 import ProductItem from '@app/components/shop/ProductItem';
 import { HeaderButton } from '@app/components/UI';
+import colors from '@app/constants/Colors';
 import { useReducer } from '@app/hooks';
 import { ProductsRoutes } from '@app/navigation/routes';
 import { addProduct } from '@app/store/cart';
@@ -36,9 +37,18 @@ const ProductsOverviewScreen = ({ navigation }: StackProps) => {
           imageUrl={item.imageUrl}
           price={item.price}
           title={item.title}
-          onAddToCart={() => handleAddToCart(item.id)}
-          onViewDetails={() => handleViewDetails(item.id, item.title)}
-        />
+          onSelect={() => handleViewDetails(item.id, item.title)}>
+          <Button
+            title='View Details'
+            color={colors.primary}
+            onPress={() => handleViewDetails(item.id, item.title)}
+          />
+          <Button
+            title='Add to Cart'
+            color={colors.primary}
+            onPress={() => handleAddToCart(item.id)}
+          />
+        </ProductItem>
       )}
       keyExtractor={(el) => el.id}
     />
@@ -49,7 +59,7 @@ ProductsOverviewScreen.navigationOptions = (navigationData: {
   navigation: NavigationDrawerProp<unknown>;
 }): NavigationStackOptions => {
   return {
-    title: navigationData.navigation.getParam('title'),
+    title: 'All products!',
     // eslint-disable-next-line react/display-name
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>

@@ -7,8 +7,9 @@ import {
 } from 'react-navigation-drawer';
 
 import {} from './index';
-import OrdersNavigator from './OrdersNavigator';
-import ProductsNavigator from './ProductsNavigator';
+import AdminNavigator from './adminNavigator';
+import OrdersNavigator from './ordersNavigator';
+import ProductsNavigator from './productsNavigator';
 import { ShopRoutes } from './routes';
 import { Route } from './shared';
 import { Colors } from '@app/constants';
@@ -33,6 +34,15 @@ const routesMap: RoutesMap = {
       // eslint-disable-next-line react/display-name
       drawerIcon: (drawerConfig) => (
         <Ionicons name='md-create' size={23} color={drawerConfig.tintColor} />
+      ),
+    },
+  },
+  Admin: {
+    screen: AdminNavigator,
+    navigationOptions: {
+      // eslint-disable-next-line react/display-name
+      drawerIcon: (drawerConfig) => (
+        <Ionicons name='md-list' size={23} color={drawerConfig.tintColor} />
       ),
     },
   },

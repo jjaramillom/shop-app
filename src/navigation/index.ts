@@ -1,5 +1,5 @@
 import { createAppContainer } from 'react-navigation';
 
-import mainNavigator from './ShopNavigator';
+import mainNavigator from './shopNavigator';
 
 export default createAppContainer(mainNavigator);
