@@ -18,21 +18,21 @@ type RoutesMap = {
 };
 
 const routesMap: RoutesMap = {
-  Orders: {
-    screen: OrdersNavigator,
-    navigationOptions: {
-      // eslint-disable-next-line react/display-name
-      drawerIcon: (drawerConfig) => (
-        <Ionicons name='md-create' size={23} color={drawerConfig.tintColor} />
-      ),
-    },
-  },
   Products: {
     screen: ProductsNavigator,
     navigationOptions: {
       // eslint-disable-next-line react/display-name
       drawerIcon: (drawerConfig) => (
         <Ionicons name='md-cart' size={23} color={drawerConfig.tintColor} />
+      ),
+    },
+  },
+  Orders: {
+    screen: OrdersNavigator,
+    navigationOptions: {
+      // eslint-disable-next-line react/display-name
+      drawerIcon: (drawerConfig) => (
+        <Ionicons name='md-create' size={23} color={drawerConfig.tintColor} />
       ),
     },
   },

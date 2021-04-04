@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import CartItem from '@app/models/CartItem';
 import Product from '@app/models/Product';
+import { add } from '@app/store/orders';
 
 interface State {
   items: Record<string, CartItem>;
@@ -53,6 +54,12 @@ const cartSlice = createSlice({
       }
       state.totalPrice -= productToRemove.price;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(add, (state, action) => {
+      state.items = {};
+      state.totalPrice = 0;
+    });
   },
 });
 

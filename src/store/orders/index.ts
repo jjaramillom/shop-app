@@ -1,1 +1,1 @@
-export { addOrder } from './slice';
+export { add } from './slice';

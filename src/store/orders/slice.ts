@@ -26,11 +26,11 @@ const ordersSlice = createSlice({
         date: new Date(),
         price: payload.items.reduce((prev, curr) => prev + curr.price * curr.quantity, 0),
       };
-      return { ...state, orders: state.orders.concat(newOrder) };
+      state.orders.push(newOrder);
     },
   },
 });
 
-export const { add: addOrder } = ordersSlice.actions;
+export const { add } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

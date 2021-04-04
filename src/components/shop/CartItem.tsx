@@ -5,13 +5,14 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { DefaultText, DefaultTextBold } from '@app/components/UI';
 
 type Props = {
-  onRemove: () => void;
+  onRemove?: () => void;
+  deletable?: boolean
   quantity: number;
   title: string;
   price: number;
 };
 
-const CartItem: React.FC<Props> = ({ onRemove, quantity, title, price }: Props) => {
+const CartItem: React.FC<Props> = ({ onRemove, quantity, title, price, deletable = true }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.itemDescription}>
@@ -24,9 +25,11 @@ const CartItem: React.FC<Props> = ({ onRemove, quantity, title, price }: Props) 
         <DefaultTextBold style={styles.mainText}>
           ${(quantity * price).toFixed(2)}
         </DefaultTextBold>
-        <TouchableOpacity onPress={onRemove} style={styles.deleteButton}>
-          <Ionicons name='md-trash' size={23} color='red' />
-        </TouchableOpacity>
+        {onRemove && (
+          <TouchableOpacity onPress={onRemove} style={styles.deleteButton}>
+            <Ionicons name='md-trash' size={23} color='red' />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

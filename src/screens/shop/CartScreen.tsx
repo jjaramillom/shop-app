@@ -7,7 +7,7 @@ import { DefaultText, DefaultTextBold, Card } from '@app/components/UI';
 import { Colors } from '@app/constants';
 import { useReducer } from '@app/hooks';
 import { removeProduct } from '@app/store/cart';
-import { addOrder } from '@app/store/orders';
+import { add } from '@app/store/orders';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
@@ -36,7 +36,7 @@ const CartScreen = (props: Props) => {
           title='Order Now'
           disabled={itemsArray.length === 0}
           color={Colors.primary}
-          onPress={() => dispatch(addOrder({ items: itemsArray }))}
+          onPress={() => dispatch(add({ items: itemsArray }))}
         />
       </Card>
       {itemsArray.length === 0 ? null : (
