@@ -48,6 +48,7 @@ const ordersSlice = createSlice({
     addProduct: (state, { payload }: PayloadAction<AddPayload>) => {
       const newProduct: Product = { ...payload, id: new Date().toString(), ownerId: 'u1' };
       state.userProducts.push(newProduct);
+      state.availableProducts.push(newProduct);
     },
     editProduct: (state, { payload }: PayloadAction<EditPayload>) => {
       const { id, ...properties } = payload;
