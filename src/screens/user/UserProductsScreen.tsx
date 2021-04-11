@@ -33,7 +33,7 @@ const UserProductsScreen = ({ navigation }: Props) => {
       {
         text: 'yes',
         style: 'destructive',
-        onPress: () => dispatch(deleteProduct({ itemId: id })),
+        onPress: () => dispatch(deleteProduct({ id: id })),
       },
     ]);
   };

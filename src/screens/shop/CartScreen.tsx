@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, Button, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Button, FlatList, ActivityIndicator } from 'react-native';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
 import CartItem from '@app/components/shop/CartItem';
@@ -7,7 +7,7 @@ import { DefaultText, DefaultTextBold, Card } from '@app/components/UI';
 import { Colors } from '@app/constants';
 import { useReducer } from '@app/hooks';
 import { removeProduct } from '@app/store/cart';
-import { add } from '@app/store/orders';
+import { createOrder } from '@app/store/orders';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
@@ -15,8 +15,10 @@ interface Props {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CartScreen = (props: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const { dispatch, selector } = useReducer();
   const { items, totalPrice } = selector((state) => state.cartItems);
+
   const itemsArray = Object.keys(items)
     .map((k) => ({
       id: k,
@@ -25,6 +27,12 @@ const CartScreen = (props: Props) => {
       price: items[k].price,
     }))
     .sort((a, b) => (a.title < b.title ? -1 : 1));
+
+  const handleCreateOrder = async () => {
+    setIsLoading(true);
+    await dispatch(createOrder({ items: itemsArray }));
+    setIsLoading(false);
+  };
   return (
     <View style={styles.container}>
       <Card style={styles.summary}>
@@ -32,12 +40,16 @@ const CartScreen = (props: Props) => {
           Total{' '}
           <DefaultText style={styles.amount}>${Math.abs(totalPrice).toFixed(2)}</DefaultText>
         </DefaultTextBold>
-        <Button
-          title='Order Now'
-          disabled={itemsArray.length === 0}
-          color={Colors.primary}
-          onPress={() => dispatch(add({ items: itemsArray }))}
-        />
+        {isLoading ? (
+          <ActivityIndicator size='large' color={Colors.primary} />
+        ) : (
+          <Button
+            title='Order Now'
+            disabled={itemsArray.length === 0}
+            color={Colors.primary}
+            onPress={() => handleCreateOrder()}
+          />
+        )}
       </Card>
       {itemsArray.length === 0 ? null : (
         <Card style={styles.itemsCard}>

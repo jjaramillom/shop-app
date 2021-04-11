@@ -1,21 +1,39 @@
-import React from 'react';
-import { FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
 import { NavigationDrawerProp } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
 import OrderItem from '@app/components/shop/OrderItem';
 import { HeaderButton } from '@app/components/UI';
+import { Colors } from '@app/constants';
 import { useReducer } from '@app/hooks';
+import { fetchOrders } from '@app/store/orders';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
 }
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const OrdersScreen = ({ navigation }: Props) => {
-  const { selector } = useReducer();
+  const [isLoading, setIsLoading] = useState(false);
+  const { selector, dispatch } = useReducer();
   const { orders } = selector((state) => state.orders);
+
+  useEffect(() => {
+    setIsLoading(true);
+    (async () => {
+      await dispatch(fetchOrders());
+      setIsLoading(false);
+    })();
+  }, [dispatch]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator color={Colors.primary} size='large' />
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -26,6 +44,14 @@ const OrdersScreen = ({ navigation }: Props) => {
     />
   );
 };
+
+const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 OrdersScreen.navigationOptions = (navigationData: {
   navigation: NavigationDrawerProp<unknown>;

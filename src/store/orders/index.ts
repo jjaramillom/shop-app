@@ -1,1 +1,1 @@
-export { add } from './slice';
+export * from './slice';

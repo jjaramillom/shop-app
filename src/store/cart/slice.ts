@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import CartItem from '@app/models/CartItem';
 import Product from '@app/models/Product';
-import { add } from '@app/store/orders';
+import { createOrder } from '@app/store/orders';
 import { deleteProduct } from '@app/store/products';
 
 interface State {
@@ -56,12 +56,12 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(add, (state, action) => {
+      .addCase(createOrder.fulfilled, (state, action) => {
         state.items = {};
         state.totalPrice = 0;
       })
-      .addCase(deleteProduct, (state, action) => {
-        delete state.items[action.payload.itemId];
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        delete state.items[action.payload.id];
       });
   },
 });

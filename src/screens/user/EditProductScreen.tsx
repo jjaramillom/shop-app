@@ -1,13 +1,21 @@
-import React, { useReducer, useEffect, useCallback, useMemo } from 'react';
-import { View, ScrollView, StyleSheet, Alert, KeyboardAvoidingView } from 'react-native';
+import React, { useReducer, useEffect, useCallback, useMemo, useState } from 'react';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  ActivityIndicator,
+} from 'react-native';
 import { NavigationDrawerProp } from 'react-navigation-drawer';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-stack';
 
-import { HeaderButton, Input } from '@app/components/UI';
+import { HeaderButton, Input, DefaultTextBold } from '@app/components/UI';
 import { Props as InputProps } from '@app/components/UI/Input';
+import { Colors } from '@app/constants';
 import { useReducer as useReduxReducer } from '@app/hooks';
-import { addProduct, editProduct } from '@app/store/products';
+import { createProduct, editProduct } from '@app/store/products';
 
 interface Props {
   navigation: NavigationStackProp<unknown>;
@@ -66,6 +74,8 @@ const formReducer = (state: FormState, action: Action): FormState => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const EditProductScreen = ({ navigation }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>();
   const { selector, dispatch } = useReduxReducer();
   const { userProducts } = selector((state) => state.products);
 
@@ -88,7 +98,7 @@ const EditProductScreen = ({ navigation }: Props) => {
     },
   });
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const product = {
       title: state.inputValues.title,
       imageUrl: state.inputValues.imageUrl,
@@ -98,12 +108,26 @@ const EditProductScreen = ({ navigation }: Props) => {
       return Alert.alert('Invalid data!', 'Please enter valid data in the form.');
     }
 
+    setIsLoading(true);
+    setError(undefined);
+
+    let resultAction;
     if (productToEdit) {
-      dispatch(editProduct({ ...product, id: productId }));
+      resultAction = await dispatch(editProduct({ ...product, id: productId }));
     } else {
-      dispatch(addProduct({ ...product, price: Number(state.inputValues.price) }));
+      resultAction = await dispatch(
+        createProduct({ ...product, price: Number(state.inputValues.price) })
+      );
     }
-    navigation.goBack();
+
+    setIsLoading(false);
+
+    if (editProduct.fulfilled.match(resultAction)) {
+      navigation.goBack();
+    } else if (editProduct.rejected.match(resultAction)) {
+      setError(resultAction.payload?.errorMessage);
+      navigation.setParams({ error: true });
+    }
   }, [state.inputValues]);
 
   useEffect(() => {
@@ -177,6 +201,22 @@ const EditProductScreen = ({ navigation }: Props) => {
     []
   );
 
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size='large' color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <DefaultTextBold>{error} :(</DefaultTextBold>
+      </View>
+    );
+  }
+
   return (
     <KeyboardAvoidingView
       style={styles.avoidingView}
@@ -202,6 +242,11 @@ const styles = StyleSheet.create({
   avoidingView: {
     flex: 1,
   },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 EditProductScreen.navigationOptions = (navigationData: {
@@ -209,14 +254,17 @@ EditProductScreen.navigationOptions = (navigationData: {
 }): NavigationStackOptions => {
   const title = navigationData.navigation.getParam('title');
   const submit = navigationData.navigation.getParam('submitHandler');
+  const error = navigationData.navigation.getParam('error');
   return {
     title,
-    // eslint-disable-next-line react/display-name
-    headerRight: () => (
-      <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item title='Save' iconName='md-checkmark' onPress={submit}></Item>
-      </HeaderButtons>
-    ),
+    ...(!error && {
+      // eslint-disable-next-line react/display-name
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+          <Item title='Save' iconName='md-checkmark' onPress={submit}></Item>
+        </HeaderButtons>
+      ),
+    }),
   };
 };
 

@@ -1,1 +1,1 @@
-export { addProduct, removeProduct } from './slice';
+export * from './slice';
