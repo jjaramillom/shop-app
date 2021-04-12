@@ -20,3 +20,12 @@ export enum AdminRoutes {
   UserProducts = 'UserProducts',
   EditProduct = 'EditProduct',
 }
+
+export enum AuthRoutes {
+  Auth = 'Auth',
+}
+
+export enum MainRoutes {
+  Auth = 'Auth',
+  Shop = 'Shop',
+}

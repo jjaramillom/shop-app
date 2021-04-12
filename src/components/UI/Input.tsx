@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, View, StyleSheet, TextInputProps } from 'react-native';
 import isDecimal from 'validator/lib/isDecimal';
+import isEmail from 'validator/lib/isEmail';
 import isEmpty from 'validator/lib/isEmpty';
 import isFloat from 'validator/lib/isFloat';
 import isURL from 'validator/lib/isURL';
@@ -8,16 +9,16 @@ import isURL from 'validator/lib/isURL';
 import DefaultText from './DefaultText';
 import DefaultTextBold from './DefaultTextBold';
 
-export type ValueType = 'string' | 'number' | 'url';
-
 export interface Props extends Omit<TextInputProps, 'onChange' | 'value'> {
   label: string;
   errorMessage: string;
   onChange: (text: string, isValid: boolean) => void;
-  type: ValueType;
-  value: string;
+  value?: string;
+  number?: boolean;
+  url?: boolean;
   required?: boolean;
   minLength?: number;
+  email?: boolean;
   minValue?: number;
 }
 
@@ -25,12 +26,14 @@ const Input: React.FC<Props> = (props: Props) => {
   const {
     errorMessage,
     label,
-    type,
     onChange,
-    value: initialValue,
+    value: initialValue = '',
     required,
     minLength,
     minValue,
+    url,
+    number,
+    email,
     ...rest
   } = props;
 
@@ -46,17 +49,19 @@ const Input: React.FC<Props> = (props: Props) => {
     if (minLength) {
       isValid = isValid && text.length > minLength;
     }
-    if (minValue && type === 'number') {
+    if (minValue && number) {
       isValid = isValid && Number(text) > minValue;
     }
-    switch (type) {
-      case 'string':
-        return isValid;
-      case 'number':
-        return isValid && (isFloat(text) || isDecimal(text));
-      case 'url':
-        return isValid && isURL(text);
+    if (email) {
+      isValid = isValid && isEmail(value);
     }
+    if (url) {
+      isValid = isValid && isURL(text);
+    }
+    if (number) {
+      isValid = isValid && (isFloat(text) || isDecimal(text));
+    }
+    return isValid;
   };
 
   const handleChange = (text: string) => {

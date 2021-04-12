@@ -148,6 +148,4 @@ const ordersSlice = createSlice({
   },
 });
 
-// export const { deleteProduct, editProduct } = ordersSlice.actions;
-
 export default ordersSlice.reducer;

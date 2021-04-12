@@ -162,7 +162,6 @@ const EditProductScreen = ({ navigation }: Props) => {
         label: 'Title',
         errorMessage: 'Please enter a valid title',
         onChange: (text: string, isValid: boolean) => handleTextChange(text, isValid, 'title'),
-        type: 'string',
         returnKeyType: 'next',
         value: productToEdit?.title ?? '',
       },
@@ -171,7 +170,7 @@ const EditProductScreen = ({ navigation }: Props) => {
         errorMessage: 'Please enter a valid image URL',
         onChange: (text: string, isValid: boolean) =>
           handleTextChange(text, isValid, 'imageUrl'),
-        type: 'url',
+        url: true,
         returnKeyType: 'next',
         value: productToEdit?.imageUrl ?? '',
       },
@@ -180,7 +179,7 @@ const EditProductScreen = ({ navigation }: Props) => {
         errorMessage: 'Please enter a valid price',
         onChange: (text: string, isValid: boolean) =>
           handleNumberChange(text, isValid, 'price'),
-        type: 'number',
+        number: true,
         keyboardType: 'decimal-pad',
         returnKeyType: 'next',
         value: productToEdit?.price.toString() ?? '',
@@ -190,7 +189,6 @@ const EditProductScreen = ({ navigation }: Props) => {
         errorMessage: 'Please enter a valid description',
         onChange: (text: string, isValid: boolean) =>
           handleTextChange(text, isValid, 'description'),
-        type: 'string',
         autoCapitalize: 'sentences',
         multiline: true,
         numberOfLines: 3,
