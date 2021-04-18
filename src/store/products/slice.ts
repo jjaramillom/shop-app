@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { RootState } from '../store';
 import Product from '@app/models/Product';
 import { firebaseUrl } from '@app/shared';
 
@@ -33,9 +34,11 @@ const initialState: State = {
 
 export const createProduct = createAsyncThunk(
   'products/createProduct',
-  async (product: CreatePayload): Promise<Product> => {
+  async (product: CreatePayload, { getState }): Promise<Product> => {
+    const state = getState() as RootState;
     const productToCreate = { ...product, ownerId: 'u1' };
-    const resp = await fetch(`${firebaseUrl}/products.json`, {
+
+    const resp = await fetch(`${firebaseUrl}/products.json?auth=${state.auth.token}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(productToCreate),
@@ -45,14 +48,16 @@ export const createProduct = createAsyncThunk(
 );
 
 export const editProduct = createAsyncThunk<
-  EditPayload,
+  EditPayload | void,
   EditPayload,
   {
     rejectValue: { errorMessage: string };
   }
->('products/editProduct', async ({ id, ...propsToUpdate }, { rejectWithValue }) => {
+>('products/editProduct', async ({ id, ...propsToUpdate }, { rejectWithValue, getState }) => {
   try {
-    const res = await fetch(`${firebaseUrl}/products/${id}.json`, {
+    const state = getState() as RootState;
+
+    const res = await fetch(`${firebaseUrl}/products/${id}.json?auth=${state.auth.token}`, {
       method: 'PATCH',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(propsToUpdate),
@@ -62,9 +67,9 @@ export const editProduct = createAsyncThunk<
     }
     return { id, ...propsToUpdate };
   } catch (error) {
-    return (rejectWithValue({
+    rejectWithValue({
       errorMessage: 'Something went wrong!',
-    }) as unknown) as EditPayload;
+    });
   }
 });
 
@@ -119,6 +124,9 @@ const ordersSlice = createSlice({
         state.userProducts = action.payload.filter((p) => (p.ownerId = 'u1'));
       })
       .addCase(editProduct.fulfilled, (state, action) => {
+        if (!action.payload) {
+          return;
+        }
         const { id, ...properties } = action.payload;
         const userItemIndex = state.userProducts.findIndex((p) => p.id === id);
         const itemIndex = state.availableProducts.findIndex((p) => p.id === id);

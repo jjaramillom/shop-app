@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { RootState } from '../store';
 import CartItem from '@app/models/CartItem';
 import Order from '@app/models/Order';
 import { firebaseUrl } from '@app/shared';
@@ -18,14 +19,16 @@ const initialState: State = {
 
 export const createOrder = createAsyncThunk(
   'orders/createOrder',
-  async ({ items }: CreatePayload): Promise<Order> => {
+  async ({ items }: CreatePayload, { getState }): Promise<Order> => {
+    const state = getState() as RootState;
+
     const newOrder = {
       id: new Date().toString(),
       cartItems: items,
       date: new Date(),
       price: items.reduce((prev, curr) => prev + curr.price * curr.quantity, 0),
     };
-    const resp = await fetch(`${firebaseUrl}/orders.json`, {
+    const resp = await fetch(`${firebaseUrl}/orders.json?auth=${state.auth.token}`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(newOrder),

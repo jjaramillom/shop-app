@@ -53,7 +53,7 @@ const Input: React.FC<Props> = (props: Props) => {
       isValid = isValid && Number(text) > minValue;
     }
     if (email) {
-      isValid = isValid && isEmail(value);
+      isValid = isValid && isEmail(text);
     }
     if (url) {
       isValid = isValid && isURL(text);
