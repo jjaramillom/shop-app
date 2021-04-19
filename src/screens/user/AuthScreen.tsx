@@ -15,7 +15,7 @@ import { NavigationStackProp, NavigationStackOptions } from 'react-navigation-st
 import { Card, Input } from '@app/components/UI';
 import colors from '@app/constants/Colors';
 import { useReducer } from '@app/hooks';
-import { MainRoutes } from '@app/navigation';
+import { MainRoutes } from '@app/navigation/routes';
 import { signUp, login } from '@app/store/auth';
 
 interface Props {

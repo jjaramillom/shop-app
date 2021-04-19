@@ -122,9 +122,15 @@ const EditProductScreen = ({ navigation }: Props) => {
 
     setIsLoading(false);
 
-    if (editProduct.fulfilled.match(resultAction)) {
+    if (
+      editProduct.fulfilled.match(resultAction) ||
+      createProduct.fulfilled.match(resultAction)
+    ) {
       navigation.goBack();
-    } else if (editProduct.rejected.match(resultAction)) {
+    } else if (
+      editProduct.rejected.match(resultAction) ||
+      createProduct.rejected.match(resultAction)
+    ) {
       setError(resultAction.payload?.errorMessage);
       navigation.setParams({ error: true });
     }

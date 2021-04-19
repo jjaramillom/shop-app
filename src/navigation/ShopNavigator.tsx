@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { createDrawerNavigator, NavigationDrawerOptions, NavigationDrawerProp, } from 'react-navigation-drawer';
 
-import {} from './index';
 import AdminNavigator from './adminNavigator';
 import OrdersNavigator from './ordersNavigator';
 import ProductsNavigator from './productsNavigator';

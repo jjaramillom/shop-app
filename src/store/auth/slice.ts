@@ -1,10 +1,17 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-community/async-storage';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
+import { AUTH } from '@app/asyncStorageKeys';
 import { signUpUrl, loginUrl } from '@app/shared';
 
 interface State {
   token: string | null;
   userId: string | null;
+}
+
+interface AutoLoginPayload {
+  token: string;
+  userId: string;
 }
 
 interface AuthenticatePayload {
@@ -20,6 +27,12 @@ interface AuthResponse {
 
 interface RejectValue {
   errorMessage: string;
+}
+
+export interface AuthStoredData {
+  token: string;
+  userId: string;
+  expirationDate: string;
 }
 
 type AuthenticateAction = 'signUp' | 'login';
@@ -61,6 +74,14 @@ const authenticate = async (
   return await res.json();
 };
 
+const saveDataToStorage = (data: AuthResponse) => {
+  const expirationDate = new Date(Date.now() + parseInt(data.expiresIn, 10) * 1000);
+  AsyncStorage.setItem(
+    AUTH,
+    JSON.stringify({ token: data.idToken, userId: data.localId, expirationDate })
+  );
+};
+
 export const signUp = createAsyncThunk<
   AuthResponse,
   AuthenticatePayload,
@@ -79,16 +100,22 @@ export const login = createAsyncThunk<
   return res;
 });
 
-const ordersSlice = createSlice({
+const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    autoLogin: (state, { payload }: PayloadAction<AutoLoginPayload>) => {
+      state.token = payload.token;
+      state.userId = payload.userId;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signUp.fulfilled, (state, action) => {
         if (!action.payload) {
           return;
         }
+        saveDataToStorage(action.payload);
         state.token = action.payload.idToken;
         state.userId = action.payload.localId;
       })
@@ -96,10 +123,13 @@ const ordersSlice = createSlice({
         if (!action.payload) {
           return;
         }
+        saveDataToStorage(action.payload);
         state.token = action.payload.idToken;
         state.userId = action.payload.localId;
       });
   },
 });
 
-export default ordersSlice.reducer;
+export const { autoLogin } = authSlice.actions;
+
+export default authSlice.reducer;

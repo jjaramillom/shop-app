@@ -26,6 +26,7 @@ export enum AuthRoutes {
 }
 
 export enum MainRoutes {
+  Startup = 'Startup',
   Auth = 'Auth',
   Shop = 'Shop',
 }

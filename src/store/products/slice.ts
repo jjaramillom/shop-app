@@ -32,20 +32,23 @@ const initialState: State = {
   userProducts: [],
 };
 
-export const createProduct = createAsyncThunk(
-  'products/createProduct',
-  async (product: CreatePayload, { getState }): Promise<Product> => {
-    const state = getState() as RootState;
-    const productToCreate = { ...product, ownerId: 'u1' };
-
-    const resp = await fetch(`${firebaseUrl}/products.json?auth=${state.auth.token}`, {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(productToCreate),
-    }).then((res) => res.json());
-    return { ...productToCreate, id: resp.name };
+export const createProduct = createAsyncThunk<
+  Product | void,
+  CreatePayload,
+  {
+    rejectValue: { errorMessage: string };
   }
-);
+>('products/createProduct', async (product, { getState }) => {
+  const state = getState() as RootState;
+  const productToCreate = { ...product, ownerId: state.auth.userId as string };
+
+  const resp = await fetch(`${firebaseUrl}/products.json?auth=${state.auth.token}`, {
+    method: 'POST',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(productToCreate),
+  }).then((res) => res.json());
+  return { ...productToCreate, id: resp.name };
+});
 
 export const editProduct = createAsyncThunk<
   EditPayload | void,
@@ -88,7 +91,8 @@ export const deleteProduct = createAsyncThunk(
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async (): Promise<Product[]> => {
+  async (_, { getState }): Promise<{ products: Product[]; userId: string }> => {
+    const state = getState() as RootState;
     try {
       const resp = await fetch(`${firebaseUrl}/products.json`, {
         method: 'GET',
@@ -100,7 +104,10 @@ export const fetchProducts = createAsyncThunk(
 
       const data = await resp.json();
 
-      return Object.keys(data).map((k) => ({ ...data[k], id: k }));
+      return {
+        products: Object.keys(data).map((k) => ({ ...data[k], id: k })),
+        userId: state.auth.userId as string,
+      };
     } catch (error) {
       throw new Error(error);
     }
@@ -114,14 +121,18 @@ const ordersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createProduct.fulfilled, (state, action) => {
-        const newProduct: Product = { ...action.payload, ownerId: 'u1' };
+        if (!action.payload) {
+          return;
+        }
+        const newProduct: Product = { ...action.payload };
         state.userProducts.push(newProduct);
         state.availableProducts.push(newProduct);
         return;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.availableProducts = action.payload;
-        state.userProducts = action.payload.filter((p) => (p.ownerId = 'u1'));
+        const { products, userId } = action.payload;
+        state.availableProducts = products;
+        state.userProducts = products.filter((p) => p.ownerId === userId);
       })
       .addCase(editProduct.fulfilled, (state, action) => {
         if (!action.payload) {

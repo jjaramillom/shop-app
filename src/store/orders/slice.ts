@@ -28,20 +28,24 @@ export const createOrder = createAsyncThunk(
       date: new Date(),
       price: items.reduce((prev, curr) => prev + curr.price * curr.quantity, 0),
     };
-    const resp = await fetch(`${firebaseUrl}/orders.json?auth=${state.auth.token}`, {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(newOrder),
-    }).then((res) => res.json());
+    const resp = await fetch(
+      `${firebaseUrl}/orders/${state.auth.userId}.json?auth=${state.auth.token}`,
+      {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(newOrder),
+      }
+    ).then((res) => res.json());
     return { ...newOrder, id: resp.name };
   }
 );
 
 export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
-  async (): Promise<Order[]> => {
+  async (_, { getState }): Promise<Order[]> => {
+    const state = getState() as RootState;
     try {
-      const resp = await fetch(`${firebaseUrl}/orders.json`, {
+      const resp = await fetch(`${firebaseUrl}/orders/${state.auth.userId}.json`, {
         method: 'GET',
       });
 
