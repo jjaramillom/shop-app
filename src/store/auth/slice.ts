@@ -48,6 +48,8 @@ const initialState: State = {
   userId: null,
 };
 
+let logoutTimer: NodeJS.Timeout | undefined;
+
 const authenticate = async (
   action: AuthenticateAction,
   payload: AuthenticatePayload
@@ -86,8 +88,9 @@ export const signUp = createAsyncThunk<
   AuthResponse,
   AuthenticatePayload,
   { rejectValue: RejectValue }
->('auth/signUp', async (payload: AuthenticatePayload, { rejectWithValue }) => {
+>('auth/signUp', async (payload: AuthenticatePayload, { dispatch }) => {
   const res = await authenticate('signUp', payload);
+  logoutTimer = setTimeout(() => dispatch(logout()), Number(res.expiresIn) * 1000);
   return res;
 });
 
@@ -95,8 +98,9 @@ export const login = createAsyncThunk<
   AuthResponse,
   AuthenticatePayload,
   { rejectValue: RejectValue }
->('auth/login', async (payload, { rejectWithValue }) => {
+>('auth/login', async (payload, { dispatch }) => {
   const res = await authenticate('login', payload);
+  logoutTimer = setTimeout(() => dispatch(logout()), Number(res.expiresIn) * 1000);
   return res;
 });
 
@@ -107,6 +111,14 @@ const authSlice = createSlice({
     autoLogin: (state, { payload }: PayloadAction<AutoLoginPayload>) => {
       state.token = payload.token;
       state.userId = payload.userId;
+    },
+    logout: (state) => {
+      AsyncStorage.removeItem(AUTH);
+      state.token = '';
+      state.userId = '';
+      if (logoutTimer) {
+        clearTimeout(logoutTimer);
+      }
     },
   },
   extraReducers: (builder) => {
@@ -130,6 +142,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { autoLogin } = authSlice.actions;
+export const { autoLogin, logout } = authSlice.actions;
 
 export default authSlice.reducer;

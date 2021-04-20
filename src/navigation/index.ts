@@ -1,7 +1,4 @@
-import { createAppContainer } from 'react-navigation';
-
 export * from './routes';
+import navigation from './NavigationContainer';
 
-import mainNavigator from './mainNavigator';
-
-export default createAppContainer(mainNavigator);
+export default navigation;
